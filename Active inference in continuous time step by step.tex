@@ -100,8 +100,7 @@ Often optimizing $F$ for arbitrary $Q(\mathbf x)$ is particularly complex. Moreo
 For these reasons, a common approximation is to assume that the R-density take a Gaussian form. 
 
 For now the D=1 case in detail, leaving the formulation of the multivariate case for later.
-
-Given a probability density $Q(x)$ with a peak at point $\mu$, the Taylor-expansion of the logarithm around his peak is
+Let's assume that the R-density $Q(x)$ has a peak at point $\mu$. The Taylor-expansion of the logarithm around this peak is
 \begin{equation}
 \ln Q(x) \simeq \ln Q(\mu) - \frac{1}{2} \frac{(x-\mu)^2}{\Sigma} 
 \end{equation}
@@ -113,10 +112,16 @@ Now it is possible to approximate the probability distribution $Q(x)$ with the d
 \begin{equation}
 \mathcal{N}(x;\mu, \Sigma) = \frac{1}{\sqrt{ 2 \pi \Sigma}} \, e^{\frac{(x-\mu)^2}{2 \Sigma}}
 \end{equation}
-a Gaussian distribution that has been normalized using the factor
-\begin{equation}
-Z_{\mathcal{N}} = Q(\mu) \sqrt{2 \pi \Sigma } 
-\end{equation}
+i.e. a Gaussian distribution that has been normalized using the factor $Q(\mu) \sqrt{2 \pi \Sigma }$
+
+
+
+
+
+
+
+
+
 
 Generalizing for a density $Q(\mathbf x)$ over a K-dimensional space $\mathbf x$ with peak at $\boldsymbol \mu$
 \begin{equation}
