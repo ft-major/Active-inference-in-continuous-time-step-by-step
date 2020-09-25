@@ -1,9 +1,0 @@
-[0] Config.pm:304> INFO - This is Biber 2.13
-[0] Config.pm:307> INFO - Logfile is 'Active inference in continuous time step by step.blg'
-[25] biber:315> INFO - === ven set 25, 2020, 12:58:00
-[40] Biber.pm:375> INFO - Reading 'Active inference in continuous time step by step.bcf'
-[106] Biber.pm:905> INFO - Found 0 citekeys in bib section 0
-[112] Utils.pm:300> WARN - The file 'Active inference in continuous time step by step.bcf' does not contain any citations!
-[119] bbl.pm:648> INFO - Writing 'Active inference in continuous time step by step.bbl' with encoding 'UTF-8'
-[120] bbl.pm:751> INFO - Output to Active inference in continuous time step by step.bbl
-[120] Biber.pm:110> INFO - WARNINGS: 1
