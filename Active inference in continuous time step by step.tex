@@ -50,6 +50,12 @@
 
 \end{itemize}
 
+\paragraph{\textbf{References:}} 
+\cite{Baltieri2019}\cite{Buckley2017}
+
+
+
+
 \section*{Free Energy Principle (FEP)}
 The goal of an agent is to determine the probability of the hidden states given some sensory inputs:
 
@@ -112,12 +118,27 @@ Now it is possible to approximate the probability distribution $Q(x)$ with the d
 \begin{equation}
 \mathcal{N}(x;\mu, \Sigma) = \frac{1}{\sqrt{ 2 \pi \Sigma}} \, e^{\frac{(x-\mu)^2}{2 \Sigma}}
 \end{equation}
-i.e. a Gaussian distribution that has been normalized using the factor $Q(\mu) \sqrt{2 \pi \Sigma }$
+i.e. a Gaussian distribution that has been normalized using the factor $Q(\mu) \sqrt{2 \pi \Sigma }$.\\
+Now the free energy can be written as follow
+\begin{equation}
+\begin{split}
+F   & = \int \mathcal{N}(x;\mu,\Sigma) (-\frac{1}{2} \ln 2 \pi \Sigma - \frac{(x-\mu)^2}{2 \Sigma} ) d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
+    & = -\frac{1}{2} \ln 2 \pi \Sigma - \frac{1}{2 \Sigma} \int \mathcal{N}(x;\mu,\Sigma) (x-\mu)^2  d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
+    & = -\frac{1}{2} \ln 2 \pi \Sigma - \frac{1}{2} - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x
+\end{split}
+\end{equation}
 
 
 
+\newpage
+Laplace encoded free energy
 
+In this case indeed this approximation is used in the following manner (in the following only the univariate case is presented in detail since it captures all the relevant assumptions).
 
+First of all the R-densities are assumed Gaussian distributions
+$$
+Q(x) \equiv \mathcal{N}(x;\mu,\Sigma)= \mathcal{N}(x;\mu, \Sigma) = \frac{1}{\sqrt{ 2 \pi \Sigma}} \, e^{\frac{(x-\mu)^2}{2 \Sigma}}
+$$
 
 
 
@@ -139,6 +160,16 @@ is possible to approximate $Q(\mathbf x)$ with the multivariate Gaussian distrib
 This approximation is particularly useful to approximate integrals. 
 
 
+
+
+Laplace encoded free energy
+
+Let's first rewrite $F$ as follow:
+$$
+F= \left< \ln P(\mathbf x,\mathbf s) \right>_{Q} - \left< \ln Q(\mathbf x) \right>_{Q}
+$$
+with $L$ called *Laplace encoded energy* and the second term is referred as entropy.
+Often optimizing $F$ for arbitrary $Q(x)$ is particularly complex, so a common approximation 
 
 
 
