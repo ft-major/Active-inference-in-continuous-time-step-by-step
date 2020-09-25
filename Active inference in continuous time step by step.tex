@@ -1,0 +1,46 @@
+\documentclass[a4paper]{article}
+
+\usepackage[T1]{fontenc} % To choose the font encoding of the output text. You might need it if you are writing documents in a language other than English.
+
+\usepackage[utf8]{inputenc} % To choose the encoding of the input text. You might need it if you are writing documents in a language other than English (foundamental in particular for letters with accent mark).
+
+\usepackage[english, italian]{babel} % It provides the internationalization of LaTeX. It has to be loaded in any document, and you have to give as an option the main language you are going to use in the document.
+
+\usepackage[a4paper, total={6in, 8in}]{geometry} % To modify margins
+
+\newcommand{\virgolette}[1]{``#1''} % New function to use correct open and close inverted commas
+
+\usepackage[autostyle]{csquotes} % Package necessary to biblatex
+\usepackage[sorting=nyt, style=authoryear]{biblatex} % Advanced bibliography handling. It is the package to use for writing a thesis. bibstyle=authortitle, backend=biber
+\addbibresource{activeinference.bib} % File from which take the bibliography 
+
+
+
+
+
+
+\title{Active Inference in continuous time notes}
+\author{Federico Maggiore}
+
+\begin{document}
+\selectlanguage{english}
+
+\maketitle
+
+\paragraph{\large\textbf{Notation\\}}
+\begin{itemize}
+
+\item $\mathbf x = \lbrace{ x \rbrace}$ environmental variables constituting latent or hidden states
+
+\item $\mathbf{s} = \lbrace{ s \rbrace}$ body sensors 
+
+
+
+\end{itemize}
+
+
+
+prova
+\end{document}
+
+
