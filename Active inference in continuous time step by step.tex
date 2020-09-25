@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper, 10pt]{article}
 
 \usepackage[T1]{fontenc} % To choose the font encoding of the output text. You might need it if you are writing documents in a language other than English.
 
@@ -14,9 +14,9 @@
 \usepackage[sorting=nyt, style=authoryear]{biblatex} % Advanced bibliography handling. It is the package to use for writing a thesis. bibstyle=authortitle, backend=biber
 \addbibresource{activeinference.bib} % File from which take the bibliography 
 
+\usepackage{amsmath,amsfonts,amsthm,bm} % Math packages
 
-
-
+\setlength{\parskip}{0.5em}
 
 
 \title{Active Inference in continuous time notes}
@@ -27,20 +27,114 @@
 
 \maketitle
 
-\paragraph{\large\textbf{Notation\\}}
+\paragraph{\textbf{Summary notation}}
 \begin{itemize}
 
-\item $\mathbf x = \lbrace{ x \rbrace}$ environmental variables constituting latent or hidden states
+\item $\mathbf x = \lbrace{ x_i \rbrace}_{i=1}^{D}$ environmental variables of the $D$-dimensional space constituting latent or hidden states;
 
-\item $\mathbf{s} = \lbrace{ s \rbrace}$ body sensors 
+\item $\mathbf{s} = \lbrace{ s_i \rbrace}_{i=1}^{S}$ body sensors input;
 
+\item $P(\mathbf{s},\mathbf{x})$ \emph{G-density};
 
+\item $P(\mathbf{x}|\mathbf{s})$ \emph{Posterior}; 
+
+\item $P(\mathbf{s}|\mathbf{x})$ \emph{Likelihood};
+
+\item $P(\mathbf x)$ \emph{Prior};
+
+\item $P(\mathbf s)=\int P(\mathbf s|\mathbf x)P(\mathbf x) d\mathbf x $ \emph{marginal likelihood}
+
+\item $Q(\mathbf x)$ \emph{R-density}
+
+\item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x $ \emph{Variational Free Energy}
 
 \end{itemize}
 
+\section*{Free Energy Principle (FEP)}
+The goal of an agent is to determine the probability of the hidden states given some sensory inputs:
+
+\begin{equation}
+P(\mathbf{x}|\mathbf{s}) = \frac{P(\mathbf{s},\mathbf{x})}{P(\mathbf{s})} = \frac{P(\mathbf{s}|\mathbf{x})P(\mathbf{x})}{P(\mathbf{s})}
+\end{equation}
+with
+\begin{itemize}
+
+\item $P(\mathbf{s},\mathbf{x})$ \emph{G-density}, beliefs about the states assumed to be encoded by the agent;
+
+\item $P(\mathbf{x}|\mathbf{s})$ \emph{Posterior}, i.e. probability of hidden causes $x$ given observed sensory data; 
+
+\item $P(\mathbf{s}|\mathbf{x})$ \emph{Likelihood}, i.e. organism's assumptions about sensory input $\mathbf{s}$ given the hidden causes $\mathbf{x}$;
+
+\item $P(\mathbf x)$ \emph{Prior}, i.e. agent's beliefs about hidden causes \textbf{before} that $\mathbf s$ are received;
+
+\item $P(\mathbf s)=\int P(\mathbf s|\mathbf x)P(\mathbf x) d\mathbf x $ \emph{marginal likelihood}, i.e. normalization factor.
+
+\end{itemize}
+
+For the agent it's not necessary to compute the complete posterior distribution, it has only to find the hidden state -or at least a good approximation- that maximize the posterior, i.e. $\arg \max_{\mathbf{x}} P(\mathbf x|\mathbf s)$.
+The problem with the exact Bayesian scheme, is that $P(\mathbf s)$ is often impossible to calculate, and moreover $P(\mathbf x|\mathbf s)$ may not take a standard shape and could not have a summary statistics. 
+
+A biologically plausible technique consist in using an auxiliary distribution $Q(\mathbf x)$ called \emph{recognition density} (\emph{R-density}) that has to be optimized to became a good approximation of the posterior.  
+
+In order to do this the Kullback-Leibler  divergence is minimized:
+\begin{equation}
+\begin{split}
+D_{KL} (\, Q(\mathbf x)\, ||\, P(\mathbf x|\mathbf s)\, ) & = \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x|\mathbf s)} d\mathbf x \\
+                                  & = \int Q(\mathbf x) \ln \frac{Q(\mathbf x)P(\mathbf s)}{P(\mathbf x,\mathbf s)} d\mathbf x \\
+                                  & = \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)} d\mathbf x + \ln P(\mathbf s) \int Q(\mathbf x) d\mathbf x \\
+                                  & = F + \ln P(\mathbf s)
+\end{split}
+\end{equation}
+
+where
+\begin{itemize}
+
+\item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x = - \int Q(\mathbf x) \ln P(\mathbf x,\mathbf s) d\mathbf x + \int Q(\mathbf x) \ln Q(\mathbf x) d\mathbf x $ is the \emph{Variational Free Energy}, a quantity that depends on the R-density and the knowledge about the environment i.e. the G-density $P(\mathbf s, \mathbf x) = P(\mathbf s|\mathbf x)P(\mathbf x)$ that we are assuming the agent has. 
+\item $\ln P(\mathbf s)$ is a term independent of the recognition density $Q(\mathbf x)$ ( $\Rightarrow$ minimizing F with respect to $Q(\mathbf x)$ will minimize the $D_{KL}$ )
+
+\end{itemize}
+
+\subsection*{Laplace approximation}
+
+Often optimizing $F$ for arbitrary $Q(x)$ is particularly complex. Moreover, assumed that neural activity parametrise sufficient statistic, a common approximation is to assume that  
+
+Given a probability density $Q(x)$ with a peak at point $\mu$, the Taylor-expansion of the logarithm around his peak is
+\begin{equation}
+\ln Q(x) \simeq \ln Q(\mu) - \frac{1}{2} \frac{(x-\mu)^2}{\Sigma} 
+\end{equation}
+with
+\begin{equation}
+\frac{1}{\Sigma} = - \frac{\partial^{2} }{\partial x^2} \ln P(x) \bigg\rvert_{x=\mu} 
+\end{equation}
+Now it is possible to approximate the probability distribution $Q(x)$ with the distribution
+\begin{equation}
+\mathcal{N}(x;\mu, \Sigma) = \frac{1}{\sqrt{ 2 \pi \Sigma}} \, e^{\frac{(x-\mu)^2}{2 \Sigma}}
+\end{equation}
+a Gaussian distribution that has been normalized using the factor
+\begin{equation}
+Z_{\mathcal{N}} = Q(\mu) \sqrt{2 \pi \Sigma } 
+\end{equation}
+
+Generalizing for a density $Q(\mathbf x)$ over a K-dimensional space $\mathbf x$ with peak at $\boldsymbol \mu$
+\begin{equation}
+\ln Q(\mathbf x) \simeq \ln Q(\boldsymbol{\mu}) - \frac{1}{2} (\boldsymbol x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\boldsymbol x-\boldsymbol \mu)
+\end{equation}
+with
+\begin{equation}
+\left[ \boldsymbol \Sigma^{-1}\right]_{i,j} = - \frac{\partial^{2} }{\partial x_i \partial x_j} \ln P(\boldsymbol x) \bigg\rvert_{\mathbf x=\boldsymbol \mu} 
+\end{equation}
+is possible to approximate $Q(\mathbf x)$ with the multivariate Gaussian distribution
+\begin{equation}
+\mathcal{N}(\mathbf x;\boldsymbol \mu, \boldsymbol \Sigma) = \frac{1}{\sqrt{( 2 \pi)^{K} \det \boldsymbol \Sigma}} \, e^{\frac{1}{2} (\boldsymbol x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\boldsymbol x-\boldsymbol \mu)}
+\end{equation}
+
+This approximation is particularly useful to approximate integrals. 
 
 
-prova
+
+
+
+
 \end{document}
 
 
