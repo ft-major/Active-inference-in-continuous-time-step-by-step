@@ -34,7 +34,7 @@
 
 \item $\mathbf{s} = \lbrace{ s_i \rbrace}_{i=1}^{S}$ body sensors input;
 
-\item $P(\mathbf{s},\mathbf{x})$ \emph{G-density};
+\item $P(\mathbf{x},\mathbf{s})$ \emph{G-density};
 
 \item $P(\mathbf{x}|\mathbf{s})$ \emph{Posterior}; 
 
@@ -48,6 +48,7 @@
 
 \item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x $ \emph{Variational Free Energy}
 
+\item $L(\mu,s) \equiv - \ln P(\mu,s)$ \emph{Laplace-encoded energy}
 \end{itemize}
 
 \paragraph{\textbf{References:}} 
@@ -60,12 +61,12 @@
 The goal of an agent is to determine the probability of the hidden states given some sensory inputs:
 
 \begin{equation}
-P(\mathbf{x}|\mathbf{s}) = \frac{P(\mathbf{s},\mathbf{x})}{P(\mathbf{s})} = \frac{P(\mathbf{s}|\mathbf{x})P(\mathbf{x})}{P(\mathbf{s})}
+P(\mathbf{x}|\mathbf{s}) = \frac{P(\mathbf{x},\mathbf{s})}{P(\mathbf{s})} = \frac{P(\mathbf{s}|\mathbf{x})P(\mathbf{x})}{P(\mathbf{s})}
 \end{equation}
 with
 \begin{itemize}
 
-\item $P(\mathbf{s},\mathbf{x})$ \emph{G-density}, beliefs about the states assumed to be encoded by the agent;
+\item $P(\mathbf{x},\mathbf{s})$ \emph{G-density}, beliefs about the states assumed to be encoded by the agent;
 
 \item $P(\mathbf{x}|\mathbf{s})$ \emph{Posterior}, i.e. probability of hidden causes $x$ given observed sensory data; 
 
@@ -95,7 +96,7 @@ D_{KL} (\, Q(\mathbf x)\, ||\, P(\mathbf x|\mathbf s)\, ) & = \int Q(\mathbf x) 
 where
 \begin{itemize}
 
-\item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x = - \int Q(\mathbf x) \ln P(\mathbf x,\mathbf s) d\mathbf x + \int Q(\mathbf x) \ln Q(\mathbf x) d\mathbf x $ is the \emph{Variational Free Energy}, a quantity that depends on the R-density and the knowledge about the environment i.e. the G-density $P(\mathbf s, \mathbf x) = P(\mathbf s|\mathbf x)P(\mathbf x)$ that we are assuming the agent has. 
+\item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x = - \left< \ln P(\mathbf x,\mathbf s) \right>_{Q} - \left< \ln Q(\mathbf x) \right>_{Q}$ is the \emph{Variational Free Energy} (VFE), a quantity that depends on the R-density and the knowledge about the environment i.e. the G-density $P(\mathbf s, \mathbf x) = P(\mathbf s|\mathbf x)P(\mathbf x)$ that we are assuming the agent has. 
 \item $\ln P(\mathbf s)$ is a term independent of the recognition density $Q(\mathbf x)$ ( $\Rightarrow$ minimizing F with respect to $Q(\mathbf x)$ will minimize the $D_{KL}$ )
 
 \end{itemize}
@@ -105,27 +106,129 @@ where
 Often optimizing $F$ for arbitrary $Q(\mathbf x)$ is particularly complex. Moreover, it is assumed that neural activity parametrise sufficient statistic.
 For these reasons, a common approximation is to assume that the R-density take a Gaussian form. 
 
-For now the D=1 case in detail, leaving the formulation of the multivariate case for later.
+\subsubsection*{One dimensional case}
 Let's assume that the R-density $Q(x)$ has a peak at point $\mu$. The Taylor-expansion of the logarithm around this peak is
 \begin{equation}
 \ln Q(x) \simeq \ln Q(\mu) - \frac{1}{2} \frac{(x-\mu)^2}{\Sigma} 
 \end{equation}
 with
 \begin{equation}
-\frac{1}{\Sigma} = - \frac{\partial^{2} }{\partial x^2} \ln P(x) \bigg\rvert_{x=\mu} 
+\frac{1}{\Sigma} = - \frac{\partial^{2} }{\partial x^2} \ln Q(x) \bigg\rvert_{x=\mu} 
 \end{equation}
 Now it is possible to approximate the probability distribution $Q(x)$ with the distribution
 \begin{equation}
 \mathcal{N}(x;\mu, \Sigma) = \frac{1}{\sqrt{ 2 \pi \Sigma}} \, e^{\frac{(x-\mu)^2}{2 \Sigma}}
 \end{equation}
 i.e. a Gaussian distribution that has been normalized using the factor $Q(\mu) \sqrt{2 \pi \Sigma }$.\\
-Now the free energy can be written as follow
+Now the VFE can be written as follow
 \begin{equation}
 \begin{split}
-F   & = \int \mathcal{N}(x;\mu,\Sigma) (-\frac{1}{2} \ln 2 \pi \Sigma - \frac{(x-\mu)^2}{2 \Sigma} ) d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
-    & = -\frac{1}{2} \ln 2 \pi \Sigma - \frac{1}{2 \Sigma} \int \mathcal{N}(x;\mu,\Sigma) (x-\mu)^2  d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
-    & = -\frac{1}{2} \ln 2 \pi \Sigma - \frac{1}{2} - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x
+F   & \approx \int \mathcal{N}(x;\mu,\Sigma) (-\frac{1}{2} \ln (2 \pi \Sigma) - \frac{(x-\mu)^2}{2 \Sigma} ) d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
+    & = -\frac{1}{2} \ln (2 \pi \Sigma) - \frac{1}{2 \Sigma} \int \mathcal{N}(x;\mu,\Sigma) (x-\mu)^2  d x - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \\
+    & = -\frac{1}{2} \ln (2 \pi \Sigma) - \frac{1}{2} - \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x
 \end{split}
+\end{equation}
+To end up with an analityc model of the FEP, further simplifications and assumptions are needed to evaluate the last term\footnote{At the end we expand the implications for the interpretation of brain functions due to this issue.}. \\
+Let's first assume that the R-density is sharply peaked at its mean value and that $P(x,s)$ is a smooth function of $x$: under these assumptions is possible to consider the integrated function appreciably non-zero only near the peak, and is possible to use a second order Taylor expansion of the $L(x,s) \equiv - \ln P(x,s)$ around $x=\mu$.
+\begin{equation}
+L(x,s) \approx L(\mu,s) + \left[ \frac{dL(x,s)}{dx} \right]_{x=\mu} (x-\mu) + \frac{1}{2} \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} (x-\mu)^2 \\
+\end{equation}
+\begin{center}
+$\Downarrow$
+\end{center}
+\begin{equation}
+\begin{split}
+- \int \mathcal{N}(x;\mu,\Sigma) \ln P(x,s) d x \approx & \int \mathcal{N}(x;\mu,\Sigma) \Big\lbrace L(\mu,s) + \left[ \frac{dL(x,s)}{dx} \right]_{x=\mu} (x-\mu) \\
+													  & + \frac{1}{2} \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} (x-\mu)^2 \Big\rbrace \\
+											  		= & \, L(\mu,s) + \left[ \frac{dL(x,s)}{dx} \right]_{x=\mu} \left( \int \mathcal{N}(x;\mu,\Sigma) \mu dx - \mu \right) \\
+											  		& + \frac{1}{2} \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} \int \mathcal{N}(x;\mu,\Sigma) (x-\mu)^2 \\
+											  		= & \, L(\mu,s) + \frac{1}{2} \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} \Sigma
+\end{split}
+\end{equation}
+Now is possible to rewrite the variational free energy as
+\begin{equation}
+F(\mu, \Sigma, s) \approx L(\mu, s) + \frac{1}{2}\left( \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} \Sigma - \ln (2 \pi \Sigma) -1 \right)
+\end{equation}
+with $L(\mu, s)$ said \emph{Laplace-encoded energy}, and the variational free energy written as a function and not anymore as a functional.
+
+Since the goal is to minimize the Kullback-Leibler divergence trough the minimization of the VFE, is possible to simplify further removing the $\Sigma$ dependency taking the derivative with respect this and imposing $\frac{dF}{d\Sigma}=0$
+\begin{equation}
+\frac{dF}{d\Sigma}= \frac{1}{2} \left( \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu} - \frac{1}{\Sigma} \right) = 0
+\end{equation}
+\begin{equation}
+\Rightarrow \Sigma = \left[ \frac{d^2L(x,s)}{dx^2} \right]_{x=\mu}^{-1} \equiv \Sigma^{\ast}
+\end{equation}
+
+The final form of the VFE is then
+\begin{equation}
+F \approx L(\mu,s) - \frac{1}{2} \ln \left( 2 \pi \Sigma^{\ast} \right)
+\end{equation}
+that can be also written getting rid of the constant variance term
+\begin{equation}
+F \approx L(\mu,s)
+\end{equation}
+
+\subsubsection*{Multivariate case}
+Generalizing for a density $Q(\mathbf x)$ over a D-dimensional space $\mathbf x$ with peak at $\boldsymbol \mu$, let's go trough the same procedure:
+\begin{equation}
+\ln Q(\mathbf x) \simeq \ln Q(\boldsymbol{\mu}) - \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu)
+\end{equation}
+with
+\begin{equation}
+\left[ \boldsymbol \Sigma^{-1}\right]_{i,j} = - \frac{\partial^{2} }{\partial x_i \partial x_j} \ln Q(\mathbf x) \bigg\rvert_{\mathbf x=\boldsymbol \mu} 
+\end{equation}
+Now let's approximate $Q(\mathbf x)$ with the multivariate Gaussian distribution
+\begin{equation}
+\mathcal{N}(\mathbf x;\boldsymbol \mu, \boldsymbol \Sigma) = \frac{1}{\sqrt{( 2 \pi)^{K} \det \boldsymbol \Sigma}} \, e^{ - \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu)}
+\end{equation}
+and rewrite the VFE as follow:
+
+\begin{equation}
+\label{eqn:f1}
+\begin{split}
+F \approx & \int \mathcal{N}(\mathbf x; \bm \mu, \bm \Sigma) \left[ -\frac{1}{2} \ln \left( (2 \pi)^{D} \det \bm \Sigma \right) - \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu) \right] d \mathbf x \\
+	& - \int \mathcal{N}(\mathbf x;\bm \mu,\bm \Sigma) \ln P(\mathbf x,\mathbf s) d \mathbf x \\
+    = & -\frac{1}{2} \ln \left( (2 \pi)^{D} \det \bm \Sigma \right) - \int \mathcal{N}(\mathbf x; \bm \mu, \bm \Sigma) \left[ \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu) \right] d \mathbf x \\
+    & - \int \mathcal{N}(\mathbf x;\bm \mu,\bm \Sigma) \ln P(\mathbf x,\mathbf s) d \mathbf x 
+\end{split}
+\end{equation}
+
+Let's focus on the second term making as first thing the change of variables with unitary Jacobian, $\mathbf y = \mathbf x - \bm \mu$. 
+\begin{equation}
+\int \mathcal{N}(\mathbf x; \bm \mu, \bm \Sigma) \left[ \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu) \right] d \mathbf x = 
+\int \mathcal{N}(\mathbf y; \bm 0, \bm \Sigma) \left[ \frac{1}{2} \mathbf y^T \boldsymbol \Sigma^{-1} \mathbf y \right] d \mathbf y
+\end{equation}
+After that, since $\bf \Sigma ^{-1}$ is a symmetric and real matrix, the spectral theorem guarantees the existence of an orthonormal matrix $\mathbf U$ such that $ \mathbf U^{T} \mathbf \Sigma^{-1} \mathbf U = \bm \Lambda$, with $\bm \Lambda$ diagonal matrix containing the eigenvalues $\lbrace \lambda_i \rbrace_{i=1}^D$ of $\bm \Sigma^{-1}$ and $\mathbf U$ containing as columns the eigenvectors of $\bm \Sigma^{-1}$, so adding the identity matrix $\mathbf I = \mathbf U \mathbf U^{T}$ we get
+\begin{equation}
+\mathbf y^{T} \bm \Sigma^{-1} \mathbf y = \mathbf y^{T} \mathbf U \mathbf U^{T} \bm \Sigma^{-1} \mathbf U \mathbf U^{T} \mathbf y = \mathbf z^{T} \bm \Lambda \mathbf z = \sum_{i=1}^{D} \lambda_i z_i^2  \, ,
+\end{equation}
+where $\mathbf z = \mathbf U^{T} \mathbf y$ is the $\mathbf y$ representation in the orthonormal basis given by the eigenvectors of $\bm \Sigma^{-1}$. Therefore moving to the variable $\mathbf z$ (the Jacobian of this change of variables is unitary too), we obtain
+\begin{equation}
+\frac{1}{\sqrt{( 2 \pi)^{D} \det \boldsymbol \Sigma}} \, \int \frac{1}{2} \left[ \sum_{i=1}^{D} \lambda_i z_i^2 \right] \, e^{ - \frac{1}{2} \sum_{i=1}^D \lambda_i z_i^2 } d \mathbf z = \frac{1}{2} \sqrt{\frac{\prod_{i=1}^D \lambda_i}{( 2 \pi)^{D}}} \, \sum_{i=1}^{D} \int \lambda_i z_i^2 \, e^{ - \frac{1}{2} \sum_{i=1}^{D} \lambda_i z_i^2} d \mathbf z 
+\end{equation}
+indicating with $\mathbf z_{\not{ \, i}} \equiv \lbrace z_j \rbrace_{j \neq i}$
+\begin{equation}
+\frac{1}{2} \sqrt{\frac{\prod_{i=1}^D \lambda_i}{( 2 \pi)^{D}}} \, \sum_{i=1}^{D} \int \lambda_i z_i^2 \, e^{ - \frac{1}{2} \lambda_i z_i^2} d z_i \int e^{\frac{1}{2} \sum_{j \neq i} \lambda_i z_j^2} d \mathbf z_{\not{\, i}} =
+\frac{1}{2} \sqrt{\frac{\prod_{i=1}^D \lambda_i}{( 2 \pi)^{D}}} \, \sum_{i=1}^{D} \lambda_i \sqrt{\frac{2 \pi}{\lambda_i}} \frac{1}{\lambda_i} \, \sqrt{\frac{(2\pi)^{D-1}}{\prod_{\not{\, i}} \lambda_{\not{\, i}}}}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\int \mathcal{N}(\mathbf x; \bm \mu, \bm \Sigma) \left[ \frac{1}{2} (\mathbf x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\mathbf x-\boldsymbol \mu) \right] d \mathbf x = 
+\int \mathcal{N}(\mathbf y; \bm 0, \bm \Sigma) \left[ \frac{1}{2} (\mathbf y)^T \boldsymbol \Sigma^{-1} (\mathbf y) \right] d \mathbf y \\
+= \frac{1}{\sqrt{( 2 \pi)^{K} \det \boldsymbol \Sigma}} \, \int e^{ - \frac{1}{2} (\mathbf y)^T \boldsymbol \Sigma^{-1} (\mathbf y)} \left[ \frac{1}{2} (\mathbf y)^T \boldsymbol \Sigma^{-1} (\mathbf y) \right] d \mathbf y 
+\end{split}
+\end{equation}
+
+Let's now evaluate the third term of Eq.(\ref{eqn:f1})
+
+
+\begin{equation}
+\vdots \notag
+\end{equation}
+
+\begin{equation}
+F \approx L(\bm \mu,\mathbf s)
 \end{equation}
 
 
@@ -144,18 +247,7 @@ $$
 
 
 
-Generalizing for a density $Q(\mathbf x)$ over a K-dimensional space $\mathbf x$ with peak at $\boldsymbol \mu$
-\begin{equation}
-\ln Q(\mathbf x) \simeq \ln Q(\boldsymbol{\mu}) - \frac{1}{2} (\boldsymbol x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\boldsymbol x-\boldsymbol \mu)
-\end{equation}
-with
-\begin{equation}
-\left[ \boldsymbol \Sigma^{-1}\right]_{i,j} = - \frac{\partial^{2} }{\partial x_i \partial x_j} \ln P(\boldsymbol x) \bigg\rvert_{\mathbf x=\boldsymbol \mu} 
-\end{equation}
-is possible to approximate $Q(\mathbf x)$ with the multivariate Gaussian distribution
-\begin{equation}
-\mathcal{N}(\mathbf x;\boldsymbol \mu, \boldsymbol \Sigma) = \frac{1}{\sqrt{( 2 \pi)^{K} \det \boldsymbol \Sigma}} \, e^{\frac{1}{2} (\boldsymbol x-\boldsymbol \mu)^T \boldsymbol \Sigma^{-1} (\boldsymbol x-\boldsymbol \mu)}
-\end{equation}
+
 
 This approximation is particularly useful to approximate integrals. 
 
