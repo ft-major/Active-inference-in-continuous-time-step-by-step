@@ -13,20 +13,22 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1}Laplace approximation}{4}{subsection.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}About Laplace Approximation}{6}{subsection.2.2}%
+\contentsline {paragraph}{About Laplace Approximation}{6}{section*.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.3}Building the generative model}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.2}Building the generative model}{6}{subsection.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.3.1}Static Model}{6}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.2.1}Static Model}{6}{subsubsection.2.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.3.2}One dimensional case}{7}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.2.2}Dynamic Model}{7}{subsubsection.2.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.3.3}Dynamic Model}{7}{subsubsection.2.3.3}%
+\contentsline {paragraph}{Considerations about noise sources}{8}{section*.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Considerations about noise sources}{8}{section*.4}%
+\contentsline {subsection}{\numberline {2.3}VFE minimisation}{8}{subsection.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.4}VFE minimisation}{8}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Multivariate case}{9}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Multivariate case}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Laplace approximation}{9}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.0.1}Multivariate case}{10}{subsubsection.3.0.1}%
+\contentsline {subsection}{\numberline {3.2}Building the generative model}{11}{subsection.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.1}Static Model}{11}{subsubsection.3.2.1}%

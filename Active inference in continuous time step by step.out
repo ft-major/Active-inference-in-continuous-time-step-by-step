@@ -1,11 +1,11 @@
 \BOOKMARK [1][-]{section.1}{Free Energy Principle \(FEP\)}{}% 1
 \BOOKMARK [1][-]{section.2}{One dimensional case}{}% 2
 \BOOKMARK [2][-]{subsection.2.1}{Laplace approximation}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{About Laplace Approximation}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.3}{Building the generative model}{section.2}% 5
-\BOOKMARK [3][-]{subsubsection.2.3.1}{Static Model}{subsection.2.3}% 6
-\BOOKMARK [3][-]{subsubsection.2.3.2}{One dimensional case}{subsection.2.3}% 7
-\BOOKMARK [3][-]{subsubsection.2.3.3}{Dynamic Model}{subsection.2.3}% 8
-\BOOKMARK [2][-]{subsection.2.4}{VFE minimisation}{section.2}% 9
-\BOOKMARK [1][-]{section.3}{Multivariate case}{}% 10
-\BOOKMARK [2][-]{subsubsection.3.0.1}{Multivariate case}{section.3}% 11
+\BOOKMARK [2][-]{subsection.2.2}{Building the generative model}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Static Model}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Dynamic Model}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{VFE minimisation}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Multivariate case}{}% 8
+\BOOKMARK [2][-]{subsection.3.1}{Laplace approximation}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.2}{Building the generative model}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Static Model}{subsection.3.2}% 11
