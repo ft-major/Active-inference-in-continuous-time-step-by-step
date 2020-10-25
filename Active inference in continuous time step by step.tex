@@ -262,14 +262,16 @@ Let's formulate a possible implementation of inference in a dynamically changing
 As the static case, is assumed that the agent believes its sensory input are generated in a similar manner with respect to Eq.(\ref{eqn:input}), in particular
 \begin{equation}
 s(x,t) = g(x) + z(t) \, .
+\label{eqn:s}
 \end{equation}
 Additionally, is assumed that the agent model of environmental dynamic follows the Langevin-type equation
 \begin{equation}
 \frac{d x(t)}{dt} = f(x) + w(t) \, .
+\label{eqn:x}
 \end{equation}
 Both $z$ and $w$ are terms representing noise and that we will specify later.
 
-Using a \emph{generalised state-space model}, in which the state of a dynamical system is represented in terms of increasingly higher order derivative of its state variables, in combination with local linearity approximation on higher orders of motion suppressing non-linear terms is possible to obtain 
+Using a \emph{generalised state-space model}, in which the state of a dynamical system is represented in terms of increasingly higher order derivative of its state variables, in combination with local linearity approximation on higher orders of motion\footnote{Without this approximation the model would scale-up very quickly becoming complicated and unwieldy fairly quickly. This approximation becomes exact when $f$ and $g$ are linear.} suppressing non-linear terms in the partial derivatives, is possible to obtain 
 \begin{equation}
   \begin{split}
     s &= g(x) + z(t) \\
@@ -284,14 +286,20 @@ Using a \emph{generalised state-space model}, in which the state of a dynamical 
     x''' & \simeq \frac{\partial f}{\partial x}x'' + w''\\
     				& \qquad \vdots
   \end{split}
+\label{eqn:hdm}
 \end{equation}
 where we have used the notation
 \begin{equation}
 s' = \frac{ds}{dt} \, , \qquad x'=\frac{dx}{dt} \, , \qquad s''= \frac{d^2 s}{dt^2} \, , \qquad x''= \frac{d^2 x}{dt^2} \, , \quad \dots
 \end{equation}
 and where $z,z',z'',\dots, w,w',w'',\dots$ are the noises source at each dynamic order.
+Considering the previous linear approximation as equalities, Eq.(\ref{eqn:hdm}) can be expressed in the more compact form
+\begin{equation}
+\tilde{s} = g(\tilde{x}) + \tilde{z} \qquad \tilde{x}' = f(\tilde{x}) + \tilde{w}
+\end{equation}
+using the notation $\tilde{s} \equiv \dots$
 \paragraph{Considerations about noise sources}
-
+the stochastic terms $z(t)$ and $w(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with strictly non-zero and well defined covariances of . This property is important to define a non-Markovian proces, because in Ito's formulation, based on Wiener noise, the covariances are delta functions and represent perfect white noise not existing in real world. This formulation can be seen as an extension of the standard state-space models using in particular a colored noise.
 
 
 
