@@ -21,14 +21,14 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {2.2.2}Dynamic Model}{7}{subsubsection.2.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Considerations about noise sources}{8}{section*.5}%
+\contentsline {paragraph}{Considerations about noise sources}{9}{section*.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.3}VFE minimisation}{8}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.3}VFE minimisation}{10}{subsection.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Multivariate case}{9}{section.3}%
+\contentsline {section}{\numberline {3}Multivariate case}{11}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Laplace approximation}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}Laplace approximation}{11}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Building the generative model}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Building the generative model}{13}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.2.1}Static Model}{11}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.1}Static Model}{13}{subsubsection.3.2.1}%

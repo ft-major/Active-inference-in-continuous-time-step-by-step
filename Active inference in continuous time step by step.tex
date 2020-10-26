@@ -231,10 +231,10 @@ P(s|x) = \mathcal{N}(s;g(x),\Sigma_s) = \frac{1}{\sqrt{ 2 \pi \Sigma_{s}}} \, e^
 \end{equation}
 Moreover let us also assume that the agent also has a prior knowledge regarding the environmental state given by $\bar{\mu}$ that is linked with the inner state through
 \begin{equation}
-x = \bar{\mu} + \mathcal{N}(x;0,\Sigma_{\bar{\mu}})
+x = \bar{\mu} + \mathcal{N}(x;0,\Sigma_{x})
 \end{equation}
 \begin{equation}
-\Rightarrow P(x) = \mathcal{N}(x;\bar{\mu},\Sigma_{\bar{\mu}}) =\frac{1}{\sqrt{ 2 \pi \Sigma_{\bar{\mu}}}} \, e^{\frac{(x-\bar{\mu})^2}{2 \Sigma_{\bar{\mu}}}} \, .
+\Rightarrow P(x) = \mathcal{N}(x;\bar{\mu},\Sigma_{x}) =\frac{1}{\sqrt{ 2 \pi \Sigma_{x}}} \, e^{\frac{(x-\bar{\mu})^2}{2 \Sigma_{x}}} \, .
 \end{equation}
 
 Now that we have specified a likelihood and a prior, is possible to determine the joint density
@@ -245,14 +245,14 @@ and consequently the Laplace-encoded energy
 \begin{equation}
 \begin{split}
 L(\mu,s) & = - \ln P(s|\mu) - \ln P(\mu)  \\
-		 & = \frac{1}{2} \ln (2 \pi \Sigma_{s}) + \frac{(s-\mu)^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{\bar{\mu}}) + \frac{(\mu-\bar{\mu})^2}{2 \Sigma_{\bar{\mu}}} \\
-		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{\bar{\mu}}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\bar{\mu}} \right) + \ln (2 \pi) \, ,
+		 & = \frac{1}{2} \ln (2 \pi \Sigma_{s}) + \frac{(s-\mu)^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{\mu}) + \frac{(\mu-\bar{\mu})^2}{2 \Sigma_{\mu}} \\
+		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{\mu}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\mu} \right) + \ln (2 \pi) \, ,
 \end{split}
 \end{equation}
 where the $\varepsilon$ terms are said \emph{prediction errors} and measure the discrepancy respectively between the actual sensory data $s$ and the outcome of its prediction $g(\mu)$ and between $\mu$ itself and its prior expectation $\bar{\mu}$. Therefore the former $\varepsilon_{s}$ describes sensory prediction errors, the latter $\varepsilon_{\mu}$ model prediction errors (i.e. how brain states deviate from their expectation) and each one is weighted with the the corresponding inverse of the variance $\Sigma_{s}^{-1}$ and $\Sigma_{\mu}^{-1}$ (which are often said \emph{precisions}). \\
 As said at the end of Sec.(\ref{sec:laplace}), since the $L$ function has a quadratic form is possible to ignore all the terms apart from the following
 \begin{equation}
-F \approx \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{\bar{\mu}}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\bar{\mu}} \right) \, .
+F \approx \frac{1}{2} \left[\frac{\varepsilon_{s}^2}{\Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{ \Sigma_{\mu}} + \ln \left( \Sigma_{s} \Sigma_{\mu} \right) \right] \, .
 \end{equation}
 
 
@@ -295,12 +295,85 @@ s' = \frac{ds}{dt} \, , \qquad x'=\frac{dx}{dt} \, , \qquad s''= \frac{d^2 s}{dt
 and where $z,z',z'',\dots, w,w',w'',\dots$ are the noises source at each dynamic order.
 Considering the previous linear approximation as equalities, Eq.(\ref{eqn:hdm}) can be expressed in the more compact form
 \begin{equation}
-\tilde{s} = g(\tilde{x}) + \tilde{z} \qquad \tilde{x}' = f(\tilde{x}) + \tilde{w}
+\tilde{s} = g(\tilde{x}) + \tilde{z} \quad , \quad \tilde{x}' = f(\tilde{x}) + \tilde{w}
 \end{equation}
-using the notation $\tilde{s} \equiv \dots$
-\paragraph{Considerations about noise sources}
-the stochastic terms $z(t)$ and $w(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with strictly non-zero and well defined covariances of . This property is important to define a non-Markovian proces, because in Ito's formulation, based on Wiener noise, the covariances are delta functions and represent perfect white noise not existing in real world. This formulation can be seen as an extension of the standard state-space models using in particular a colored noise.
+using the notation 
+\begin{equation}
+\tilde{s} = (s, s', s'', \dots) \equiv (s_{[0]}, s_{[1]}, s_{[2]}, \dots)  \quad , \quad \tilde{x} = (x, x ', x '', \dots) \equiv (x_{[0]}, x_{[1]}, x_{[2]}, \dots)\, ,
+\end{equation}
+where
+\begin{equation}
+s_{[n]} \equiv \frac{d^n}{dt^n}s = s_{[n-1]}' \quad , \quad x_{[n]} \equiv \frac{d^n}{dt^n}x = x_{[n-1]}' \, ,
+\end{equation}
+\begin{equation}
+\tilde{x}' \equiv D \tilde{x} = \frac{d}{dt}(x,x',x'',\dots)=(x',x'',x''',\dots)\equiv(x_{[1]}, x_{[2]}, x_{[3]}, \dots)
+\end{equation}
+and
+\begin{equation}
+\tilde{g} \equiv (g_{[0]}, g_{[1]}, g_{[2]}, \dots) \quad , \quad \tilde{f} \equiv (f_{[0]}, f_{[1]}, f_{[2]}, \dots)
+\end{equation}
+with
+\begin{equation}
+\begin{split}
+g_{[0]} & \equiv g(x) \\
+g_{[1]} & \equiv \frac{\partial g}{\partial x} x_{[0]} \\
+& \qquad \vdots \\
+g_{[n]} & \equiv \frac{\partial g}{\partial x} x_{[n]} \\
+& \qquad \vdots
+\end{split}
+\qquad
+\begin{split}
+f_{[0]} & \equiv f(x) \\
+f_{[1]} & \equiv \frac{\partial f}{\partial x} x \\
+& \qquad \vdots \\
+f_{[n]} & \equiv \frac{\partial f}{\partial x} x_{[n]} \\
+& \qquad \vdots
+\end{split}
+\end{equation}
 
+\paragraph{Considerations about noise sources}
+the stochastic terms $z(t)$ and $w(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with well defined covariances of $\tilde{z}(t) = (z,z',z'',\dots) \equiv (z_{[0]}, z_{[1]}, z_{[2]}, \dots)$ and $\tilde{w}(t) = (w,w',w'',\dots) \equiv (w_{[0]}, w_{[1]}, w_{[2]}, \dots)$. This property is important to define a non-Markovian process, because in Ito's formulation, based on Wiener noise, the autocorrelation functions can be seen as strictly equal to delta functions representing perfect white noise not existing in real world. \textbf{Da approfondire}\\
+A common approximation that brings to a really simple form of the joint density $P(x,s)$ is the one in which the covariances between dynamical orders are assumed equal to zero, i.e. independent noise sources, that leads to 
+\begin{equation}
+\begin{split}
+P(\tilde{s} | \tilde{x}) & = P(s_{[0]}, s_{[1]}, s_{[2]}, \dots | x_{[0]}, x_{[1]}, x_{[2]}, \dots) = \prod_{n=0}^{\infty} P(s_{[n]} | x_{[n]}) \\
+P(\tilde{x}) & = P(x_{[0]}, x_{[1]}, x_{[2]}, \dots) = P(x_{[0]}) \prod_{n=0}^{\infty} P(x_{[n+1]} | x_{[n]}) \\
+\end{split}
+\end{equation}
+Assuming in addition that at all dynamics orders $z_{[n]}$ and $w_{[n]}$ have a Gaussian form we can write
+\begin{equation}
+P(s_{[n]} | x_{[n]}) = \mathcal{N}(s_{[n]};g_{[n]},\Sigma_{s_{[n]}})
+	=\frac{1}{\sqrt{2\pi \Sigma_{s_{[n]}}}} \, e^{-\frac{(s_{[n]}-g_{[n]})^2}{2 \Sigma_{s_{[n]}}}}
+\end{equation}
+and
+\begin{equation}
+P(x_{[n+1]} | x_{[n]}) = \mathcal{N}(x_{[n+1]};f_{[n]},\Sigma_{x_{[n]}})
+	=\frac{1}{\sqrt{2\pi \Sigma_{x_{[n]}}}} \, e^{-\frac{(x_{[n]}-f_{[n]})^2}{2 \Sigma_{x_{[n]}}}} \, .
+\end{equation}
+In dynamical systems the $x_{[0]}$ prior at each time step is usually omitted, assuming the agent uses the actual state as an information with no uncertainty, like a delta distribution around the actual state that eliminates the corresponding term from the VFE.
+
+In conclusion the joint density can be write as
+\begin{equation}
+P(\tilde{x}, \tilde{s}) = \prod_{n=0}^{\infty} P(s_{[n]} | x_{[n]}) P(x_{[n+1]} | x_{[n]})
+\end{equation}
+that, inserted in the Laplace-encoded energy lead to 
+\begin{equation}
+\begin{split}
+L(\tilde{\mu}, \tilde{s}) &= \sum_{n=0}^{\infty} \left[ \frac{(s_{[n]}-g_{[n]})^2}{2 \Sigma_{s_{[n]}}} + \frac{1}{2} \ln (2 \pi \Sigma_{s_{[n]}}) \right] + \left[ \frac{(\mu_{[n+1]}-f_{[n]})^2}{2 \Sigma_{\mu_{[n]}}} + \frac{1}{2} \ln (2 \pi \Sigma_{\mu_{[n]}}) \right] \\
+	&= \sum_{n=0}^{\infty} \frac{\varepsilon_{s_{[n]}}^2}{2 \Sigma_{s_{[n]}}} + \frac{\varepsilon_{\mu_{[n]}}^2}{2 \Sigma_{\mu_{[n]}}} + \frac{1}{2} \ln (\Sigma_{s_{[n]}}\Sigma_{\mu_{[n]}}) + \ln(2 \pi)\\
+\end{split}
+\end{equation}
+with $\varepsilon_{s_{[n]}} \equiv s_{[n]}-g_{[n]}$ and $\varepsilon_{\mu_{[n]}} \equiv \mu_{[n+1]}-f_{[n]}$ $n$th component of $\tilde{\varepsilon_{s}}$ and $\tilde{\varepsilon_{\mu}}$ that, as in the static case, are said \emph{prediction errors}, which encode respectively the discrepancy between sensory data $\tilde{s}$ and its prediction $\tilde{g}$ and the difference between the expected higher-order output $\tilde{\mu}'$ and its generation $\tilde{f}$.
+
+Usually only dynamics up to a finite order $n_{max}$ are considered, and this is done by setting 
+\begin{equation}
+\mu_{[n_{max}]} = w_{[n_{max}]}
+\end{equation}
+with $\Sigma_{\mu_[n_{max}]}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
+Finally, since also in this case the $L$ function has a quadratic form, when writing down the VFE is possible to ignore all the terms apart from
+\begin{equation}
+F \approx \frac{1}{2} \, \sum_{n=0}^{n_{max}} \left[ \frac{\varepsilon_{s_{[n]}}^2}{ \Sigma_{s_{[n]}}} + \frac{\varepsilon_{\mu_{[n]}}^2}{\Sigma_{\mu_{[n]}}} + \ln (\Sigma_{s_{[n]}}\Sigma_{\mu_{[n]}}) \right]
+\end{equation}
 
 
 \subsection{VFE minimisation}
