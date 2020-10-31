@@ -274,16 +274,16 @@ Both $z$ and $w$ are terms representing noise and that we will specify later.
 Using a \emph{generalised state-space model}, in which the state of a dynamical system is represented in terms of increasingly higher order derivative of its state variables, in combination with local linearity approximation on higher orders of motion\footnote{Without this approximation the model would scale-up very quickly becoming complicated and unwieldy fairly quickly. This approximation becomes exact when $f$ and $g$ are linear.} suppressing non-linear terms in the partial derivatives, is possible to obtain 
 \begin{equation}
   \begin{split}
-    s &= g(x) + z(t) \\
-    s' &= \frac{\partial g}{\partial x}x' + z' \\
-    s'' & \simeq \frac{\partial g}{\partial x}x'' + z''\\
+    s &= g(x) + z_{s}(t) \\
+    s' &= \frac{\partial g}{\partial x}x' + z_{s}' \\
+    s'' & \simeq \frac{\partial g}{\partial x}x'' + z_{s}''\\
     				& \qquad \vdots
   \end{split}
   \qquad
   \begin{split}
-    x' &= f(x) + w(t) \\
-    x'' &= \frac{\partial f}{\partial x}x' + w' \\
-    x''' & \simeq \frac{\partial f}{\partial x}x'' + w''\\
+    x' &= f(x) + z_{x}(t) \\
+    x'' &= \frac{\partial f}{\partial x}x' + z_{x}' \\
+    x''' & \simeq \frac{\partial f}{\partial x}x'' + z_{x}''\\
     				& \qquad \vdots
   \end{split}
 \label{eqn:hdm}
@@ -292,10 +292,10 @@ where we have used the notation
 \begin{equation}
 s' = \frac{ds}{dt} \, , \qquad x'=\frac{dx}{dt} \, , \qquad s''= \frac{d^2 s}{dt^2} \, , \qquad x''= \frac{d^2 x}{dt^2} \, , \quad \dots
 \end{equation}
-and where $z,z',z'',\dots, w,w',w'',\dots$ are the noises source at each dynamic order.
+and where $z_{s},z_{s}',z_{s}'',\dots, z_{x},z_{x}',z_{x}'',\dots$ are the noises source at each dynamic order.
 Considering the previous linear approximation as equalities, Eq.(\ref{eqn:hdm}) can be expressed in the more compact form
 \begin{equation}
-\tilde{s} = g(\tilde{x}) + \tilde{z} \quad , \quad \tilde{x}' = f(\tilde{x}) + \tilde{w}
+\tilde{s} = g(\tilde{x}) + \tilde{z_{s}} \quad , \quad \tilde{x}' = f(\tilde{x}) + \tilde{z_{x}}
 \end{equation}
 using the notation 
 \begin{equation}
@@ -332,7 +332,7 @@ f_{[n]} & \equiv \frac{\partial f}{\partial x} x_{[n]} \\
 \end{equation}
 
 \paragraph{Considerations about noise sources}
-the stochastic terms $z(t)$ and $w(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with well defined covariances of $\tilde{z}(t) = (z,z',z'',\dots) \equiv (z_{[0]}, z_{[1]}, z_{[2]}, \dots)$ and $\tilde{w}(t) = (w,w',w'',\dots) \equiv (w_{[0]}, w_{[1]}, w_{[2]}, \dots)$. This property is important to define a non-Markovian process, because in Ito's formulation, based on Wiener noise, the autocorrelation functions can be seen as strictly equal to delta functions representing perfect white noise not existing in real world. \textbf{Da approfondire}\\
+the stochastic terms $z_{s}(t)$ and $z_{x}(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with well defined covariances of $\tilde{z_{s}}(t) = (z_{s},z_{s}',z_{s}'',\dots) \equiv (z_{s[0]}, z_{s[1]}, z_{s[2]}, \dots)$ and $\tilde{z_{x}}(t) = (z_{x},z_{x}',z_{x}'',\dots) \equiv (z_{x[0]}, z_{x[1]}, z_{x[2]}, \dots)$. This property is important to define a non-Markovian process, because in Ito's formulation, based on Wiener noise, the autocorrelation functions can be seen as strictly equal to delta functions representing perfect white noise not existing in real world. \textbf{Da approfondire}\\
 A common approximation that brings to a really simple form of the joint density $P(x,s)$ is the one in which the covariances between dynamical orders are assumed equal to zero, i.e. independent noise sources, that leads to 
 \begin{equation}
 \begin{split}
@@ -340,17 +340,17 @@ P(\tilde{s} | \tilde{x}) & = P(s_{[0]}, s_{[1]}, s_{[2]}, \dots | x_{[0]}, x_{[1
 P(\tilde{x}) & = P(x_{[0]}, x_{[1]}, x_{[2]}, \dots) = P(x_{[0]}) \prod_{n=0}^{\infty} P(x_{[n+1]} | x_{[n]}) \\
 \end{split}
 \end{equation}
-Assuming in addition that at all dynamics orders $z_{[n]}$ and $w_{[n]}$ have a Gaussian form we can write
+Assuming in addition that at all dynamics orders $z_{s[n]}$ and $z_{x[n]}$ have a Gaussian form we can write
 \begin{equation}
-P(s_{[n]} | x_{[n]}) = \mathcal{N}(s_{[n]};g_{[n]},\Sigma_{s_{[n]}})
-	=\frac{1}{\sqrt{2\pi \Sigma_{s_{[n]}}}} \, e^{-\frac{(s_{[n]}-g_{[n]})^2}{2 \Sigma_{s_{[n]}}}}
+P(s_{[n]} | x_{[n]}) = \mathcal{N}(s_{[n]};g_{[n]},\Sigma_{s[n]})
+	=\frac{1}{\sqrt{2\pi \Sigma_{s[n]}}} \, e^{-\frac{(s_{[n]}-g_{[n]})^2}{2 \Sigma_{s[n]}}}
 \end{equation}
 and
 \begin{equation}
-P(x_{[n+1]} | x_{[n]}) = \mathcal{N}(x_{[n+1]};f_{[n]},\Sigma_{x_{[n]}})
-	=\frac{1}{\sqrt{2\pi \Sigma_{x_{[n]}}}} \, e^{-\frac{(x_{[n]}-f_{[n]})^2}{2 \Sigma_{x_{[n]}}}} \, .
+P(x_{[n+1]} | x_{[n]}) = \mathcal{N}(x_{[n+1]};f_{[n]},\Sigma_{x[n]})
+	=\frac{1}{\sqrt{2\pi \Sigma_{x[n]}}} \, e^{-\frac{(x_{[n+1]}-f_{[n]})^2}{2 \Sigma_{x[n]}}} \, .
 \end{equation}
-In dynamical systems the $x_{[0]}$ prior at each time step is usually omitted, assuming the agent uses the actual state as an information with no uncertainty, like a delta distribution around the actual state that eliminates the corresponding term from the VFE.
+In dynamical systems the $x_{[0]}$ prior at each time step is usually omitted because the agent does not explicitly desire any $x_{[0]}$, giving it a flat prior (i.e. infinite variance) that eliminates the corresponding term from the VFE. 
 
 In conclusion the joint density can be write as
 \begin{equation}
@@ -367,9 +367,9 @@ with $\varepsilon_{s_{[n]}} \equiv s_{[n]}-g_{[n]}$ and $\varepsilon_{\mu_{[n]}}
 
 Usually only dynamics up to a finite order $n_{max}$ are considered, and this is done by setting 
 \begin{equation}
-\mu_{[n_{max}]} = w_{[n_{max}]}
+\mu_{[n_{max}+1]} = w_{[n_{max}]}
 \end{equation}
-with $\Sigma_{\mu_[n_{max}]}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
+with $\Sigma_{\mu_{[n_{max}]}}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
 Finally, since also in this case the $L$ function has a quadratic form, when writing down the VFE is possible to ignore all the terms apart from
 \begin{equation}
 F \approx \frac{1}{2} \, \sum_{n=0}^{n_{max}} \left[ \frac{\varepsilon_{s_{[n]}}^2}{ \Sigma_{s_{[n]}}} + \frac{\varepsilon_{\mu_{[n]}}^2}{\Sigma_{\mu_{[n]}}} + \ln (\Sigma_{s_{[n]}}\Sigma_{\mu_{[n]}}) \right]
@@ -386,7 +386,7 @@ In particular, a brain state $\mu$ is updated between two sequential steps $t$ a
 \end{equation}
 
 
-
+explicitate 
 
 
 
