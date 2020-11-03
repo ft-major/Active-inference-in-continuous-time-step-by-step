@@ -109,31 +109,82 @@ import matplotlib.pyplot as plt
 #%%
 simT=100                            # Simulation Time
 dt=0.005                            # Time step lenght
-
-steps=range(simT/dt)                # Time step number
+print(100/0.005)
+steps=range(int(simT/dt))                # Time step number
 action=True                         # Variable to enable action
-
-# Generative process parameters
-SigmaGP_s = 0.1                     # Generative process s variance
-SigmaGP_s1 = 0.1                    # Generative process s'
-T0 = 100                            # Startup temperature
-
-# Generative model parameters
-Td = 4                              # Desired temperature
-actionTime=0                        # Variable that enable action only after a fixed number of steps
-Sigma_s = SigmaGP_s                 # Generative model s variance (in this case we're assuming the agent knows gp variace)
-Sigma_s1 = SigmaGP_s1               # Generative model s' variance (in this case we're assuming the agent knows gp variace)
-Sigma_mu = 0.1                      # Generative model $\mu$ variance
-Sigma_mu1 = 0.1                     # Generative model $\mu'$ variance
 
 #%% md
 # ## Classes
 #%%
+class GenProc:
+    # Generative process class
+    def __init__(self, rng, x, x1):
+
+        # Generative process parameters
+        self.SigmaGP_s = 0.1                        # Generative process s variance
+        self.SigmaGP_s1 = 0.1                       # Generative process s'
+        self.T0 = 100                               # Startup temperature
+
+        self.rng = rng                              # np.random.RandomState
+        self.x = x                                  # Two dimensional array storing agent position and velocity
+
+    def T(self):                                    # System temperature
+        return self.T0/(self.x[0]^2+1)
+
+    def T1(self):                                   # System temperature "velocity"
+        Tx = -2*self.T0*self.x[0]/((self.x[0]^2+1)^2)
+        return Tx*self.x[1]
+
+    def genS(self):                                 # Function that create agent's sensory input (two dimensional array)
+        s = np.zeros(2)
+        s[0] = self.SigmaGP_s*self.rng.randn() + self.T()
+        s[1] = self.SigmaGP_s1*self.rng.randn() + self.T1()
+        return s
+
+    def step(self, dt):                             # Step of generative process dynamic
+        self.x[0] += dt*self.x[1]
+
 class GenMod:
     # Generative model class
-    def __init__(self, rng, x, x1, T, T1, SigmaGP_s, SigmaGP_s1 ):
+    def __init__(self, rng, dt):
 
-        self.rng = rng              # np.random.RandomState
-        self.x = x                  # Agent position
-        self.x1 = x1                # Agent velocity
-        self.T = 
+        self.s = s                                  # Two dimensional array storing sensory input s and s'
+        self.a = a                                  # Action variable
+        self.mu = mu                                # Tree dimensional array storing brain state variables mu, mu' and mu''
+
+        # Generative model parameters
+        self.Td = 4                                 # Desired temperature
+        self.actionTime=0                           # Variable that enable action only after a fixed number of steps
+        self.Sigma_s = 0.1                          # Generative model s variance (in this case we're assuming the agent knows gp variace)
+        self.Sigma_s1 = 0.1                         # Generative model s' variance (in this case we're assuming the agent knows gp variace)
+        self.Sigma_mu = 0.1                         # Generative model $\mu$ variance
+        self.Sigma_mu1 = 0.1                        # Generative model $\mu'$ variance
+        self.k_mu = 0.1*dt                          # Gradient descent inference parameter
+        self.k_a = 0.1*dt                           # Gradient descent action parameter
+
+    def f(self):                                    # f(mu) dynamics generative model
+        return -self.mu[0]+self.Td
+
+    def VFE(self):                                  # Variational Free Energy
+        epsilon_s = self.s[0] - self.mu[0]
+        epsilon_s1 = self.s[1] - self.mu[1]
+        epsilon_mu = self.mu[1] - f()
+        epsilon_mu1 = self.mu[2] + self.mu[1]
+        return 1/2*( espilon_s^2/self.Sigma_s + espilon_s1^2/self.Sigma_s1 + espilon_mu^2/self.Sigma_mu + espilon_mu1^2/self.Sigma_mu1 )
+
+    def update(self, dt, step, x, T0):
+        epsilon_s = self.s[0] - self.mu[0]
+        epsilon_s1 = self.s[1] - self.mu[1]
+        epsilon_mu = self.mu[1] - f()
+        epsilon_mu1 = self.mu[2] + self.mu[1]
+        self.mu[0] += dt*self.mu[1] - self.k_mu*( - epsilon_s/self.Sigma_s + epsilon_mu/self.Sigma_mu )
+        self.mu[1] += dt*self.mu[2] - self.k_mu*( - epsilon_s1/self.Sigma_s1 + epsilon_mu/self.Sigma_mu + epsilon_mu1/self.Sigma_mu1)
+        self.mu[2] += - self.k_mu*( epsilon_mu1/self.Sigma_mu1 )
+        if self.actionTime<=step:
+            Tx = -2*T0*.x/((.x^2+1)^2)
+            self.a += -self.k_a*Tx*epsilon_s1/self.Sigma_s1
+
+#%%
+g=GenMod(rng=0,x=100, x1=0)
+g.x=1
+print(g.T)
