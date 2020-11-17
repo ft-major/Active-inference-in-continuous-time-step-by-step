@@ -92,8 +92,6 @@
 # x'(t+dt) = x'(t) - k_{a} \left[ \frac{ \partial F }{ \partial x' } \right] = x'(t) - k_{a} \left[ \frac{ \partial F }{ \partial s' } \frac{ \partial s' }{ dx' } \right] = x'(t) - k_{a} \left[ \frac{ \varepsilon_{s'} }{ \Sigma_{s'} } (-T_0\frac{ 2x }{ (x^2+1)^2 }) \right]
 # $$
 
-#%%
-
 #%% md
 # # Code
 
@@ -147,13 +145,13 @@ class GenMod:
 
         # Generative model parameters
         self.Td = 4                                 # Desired temperature
-        self.actionTime= 25                          # Variable that enable action only after a fixed amount of time
-        self.Sigma_s = 0.1                            # Generative model s variance (in this case we're assuming the agent knows gp variace)
-        self.Sigma_s1 = 0.1                           # Generative model s' variance (in this case we're assuming the agent knows gp variace)
-        self.Sigma_mu = 0.1                           # Generative model $\mu$ variance
-        self.Sigma_mu1 = 0.1                          # Generative model $\mu'$ variance
+        self.actionTime= 25                         # Variable that enable action only after a fixed amount of time
+        self.Sigma_s = 0.1                          # Generative model s variance (in this case we're assuming the agent knows gp variace)
+        self.Sigma_s1 = 0.1                         # Generative model s' variance (in this case we're assuming the agent knows gp variace)
+        self.Sigma_mu = 0.1                         # Generative model $\mu$ variance
+        self.Sigma_mu1 = 0.1                        # Generative model $\mu'$ variance
         self.k_mu = 0.1*dt                          # Gradient descent inference parameter
-        self.k_a = 0.01*dt                           # Gradient descent action parameter
+        self.k_a = 0.01*dt                          # Gradient descent action parameter
 
     def f(self):                                    # f(mu) dynamics generative model
         return -self.mu[0]+self.Td
@@ -174,7 +172,8 @@ class GenMod:
         self.mu[1] += dt*self.mu[2] - self.k_mu*( - epsilon_s1/self.Sigma_s1 + epsilon_mu/self.Sigma_mu + epsilon_mu1/self.Sigma_mu1)
         self.mu[2] += - self.k_mu*( epsilon_mu1/self.Sigma_mu1 )
         if self.actionTime<=step*dt:
-            Tx = +1 #-2*T0*x/((x**2+1)**2)
+            #Tx = -1                                # To try if you want to give a less precise inverse modet to the agent
+            Tx = -2*T0*x/((x**2+1)**2)
             self.a += -self.k_a*Tx*epsilon_s1/self.Sigma_s1
 
 # Plotter class
@@ -215,7 +214,7 @@ if __name__ == "__main__":
     gm = GenMod( rng, dt, s=np.zeros(2), mu=np.zeros(3), a=0 )
                                                     # Initialasing generative model
 
-    TvsSteps = Plotter(steps)                   # Initialasing Temperature dynamic plot
+    #TvsSteps = Plotter(steps)                       # Initialasing Temperature dynamic plot
     #TvsSteps.update(0, )
     T = np.array([gp.T()])
     pos = np.array([gp.x[0]])
@@ -223,12 +222,12 @@ if __name__ == "__main__":
     for i in range(1,steps):
         #print(i),
         gp.x[1] = gm.a                              # Agent's action (set its own velocity)
-        gp.dynamic(dt)                                # The environment evolves following the dynamic given by x and x'
+        gp.dynamic(dt)                              # The environment evolves following the dynamic given by x and x'
         gm.s = gp.genS()                            # The generative process creates noisy sensory input that are percevied by the generative model
         gm.update(dt, i, gp.x[0], gp.T0)            # The generative model update internal states mu, mu' and mu'' computing the dynamic,
                                                     # and taking the VFE gradient descent (every step of the gradient descent is simultaneous with the internal
                                                     # model updating step, that is an assumpion)
-        TvsSteps.get_data(i*dt, gp.T())                  # Updating Temperature dynamic plot
+        #TvsSteps.get_data(i*dt, gp.T())                  # Updating Temperature dynamic plot
         T = np.append(T,np.array(gp.T()))
         pos = np.append(pos,gp.x[0])
         act = np.append(act,gm.a)

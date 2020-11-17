@@ -261,12 +261,12 @@ Let's formulate a possible implementation of inference in a dynamically changing
 
 As the static case, is assumed that the agent believes its sensory input are generated in a similar manner with respect to Eq.(\ref{eqn:input}), in particular
 \begin{equation}
-s(x,t) = g(x) + z(t) \, .
+s(x,t) = g(x) + z_s(t) \, .
 \label{eqn:s}
 \end{equation}
 Additionally, is assumed that the agent model of environmental dynamic follows the Langevin-type equation
 \begin{equation}
-\frac{d x(t)}{dt} = f(x) + w(t) \, .
+\frac{d x(t)}{dt} = f(x) + z_x(t) \, .
 \label{eqn:x}
 \end{equation}
 Both $z$ and $w$ are terms representing noise and that we will specify later.
@@ -332,7 +332,7 @@ f_{[n]} & \equiv \frac{\partial f}{\partial x} x_{[n]} \\
 \end{equation}
 
 \paragraph{Considerations about noise sources}
-the stochastic terms $z_{s}(t)$ and $z_{x}(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with well defined covariances of $\tilde{z_{s}}(t) = (z_{s},z_{s}',z_{s}'',\dots) \equiv (z_{s[0]}, z_{s[1]}, z_{s[2]}, \dots)$ and $\tilde{z_{x}}(t) = (z_{x},z_{x}',z_{x}'',\dots) \equiv (z_{x[0]}, z_{x[1]}, z_{x[2]}, \dots)$. This property is important to define a non-Markovian process, because in Ito's formulation, based on Wiener noise, the autocorrelation functions can be seen as strictly equal to delta functions representing perfect white noise not existing in real world. \textbf{Da approfondire}\\
+the stochastic terms $z_{s}(t)$ and $z_{x}(t)$ in Eq.(\ref{eqn:s}) and Eq.(\ref{eqn:x}) are analytic and form stochastic equations based on Stratonovich calculus, with well defined covariances of $\tilde{z_{s}}(t) = (z_{s[0]}, z_{s[1]}, z_{s[2]}, \dots)$ and $\tilde{z_{x}}(t) = (z_{x[0]}, z_{x[1]}, z_{x[2]}, \dots)$. This property is important to define a non-Markovian process, because in Ito's formulation, based on Wiener noise, the autocorrelation functions can be seen as strictly equal to delta functions representing perfect white noise not existing in real world. \textbf{Da approfondire}\\
 A common approximation that brings to a really simple form of the joint density $P(x,s)$ is the one in which the covariances between dynamical orders are assumed equal to zero, i.e. independent noise sources, that leads to 
 \begin{equation}
 \begin{split}
@@ -367,7 +367,7 @@ with $\varepsilon_{s_{[n]}} \equiv s_{[n]}-g_{[n]}$ and $\varepsilon_{\mu_{[n]}}
 
 Usually only dynamics up to a finite order $n_{max}$ are considered, and this is done by setting 
 \begin{equation}
-\mu_{[n_{max}+1]} = w_{[n_{max}]}
+\mu_{[n_{max}+1]} = z_{\mu [n_{max}]}
 \end{equation}
 with $\Sigma_{\mu_{[n_{max}]}}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
 Finally, since also in this case the $L$ function has a quadratic form, when writing down the VFE is possible to ignore all the terms apart from
@@ -380,9 +380,9 @@ F \approx \frac{1}{2} \, \sum_{n=0}^{n_{max}} \left[ \frac{\varepsilon_{s_{[n]}}
 In Sec.(\ref{sec:laplace}) we have expressed, in an approximated form, the Variational Free Energy in terms of the Laplace-encoded Energy, which depends on joint density $P(\mathbf x, \mathbf s)$, that we have seen how to build starting from the generative model in Sec.(\ref{sec:G}). Now we are going to see a possible implementation of a biologically plausible mechanism to minimise VFE.
 
 In the Free Energy Principle framework, it is proposed that the innate dynamics of the neural activity evolves in such a way that it implement a gradient descent scheme on the VFE. \\
-In particular, a brain state $\mu$ is updated between two sequential steps $t$ amd $t+1$ as
+In particular, a brain state $\mu$ is updated between two sequential steps $t$ and $t+1$ as
 \begin{equation}
-\mu^{t+1}
+\mu^{t+1} = \mu^{t} - k \cdot \nabla_{\mu} F= \mu^{t} - k \cdot \nabla_{\mu} L(\tilde{\mu}, \tilde{s})
 \end{equation}
 
 
