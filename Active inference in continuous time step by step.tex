@@ -380,14 +380,12 @@ F \approx \frac{1}{2} \, \sum_{n=0}^{n_{max}} \left[ \frac{\varepsilon_{s_{[n]}}
 In Sec.(\ref{sec:laplace}) we have expressed, in an approximated form, the Variational Free Energy in terms of the Laplace-encoded Energy, which depends on joint density $P(\mathbf x, \mathbf s)$, that we have seen how to build starting from the generative model in Sec.(\ref{sec:G}). Now we are going to see a possible implementation of a biologically plausible mechanism to minimise VFE.
 
 In the Free Energy Principle framework, it is proposed that the innate dynamics of the neural activity evolves in such a way that it implement a gradient descent scheme on the VFE. \\
-In particular, a brain state $\mu$ is updated between two sequential steps $t$ and $t+1$ as
+In particular, in the static model case, a brain state $\mu$ is updated between two (internal) sequential steps $t$ and $t+dt$ as
 \begin{equation}
-\mu^{t+1} = \mu^{t} - k \cdot \nabla_{\mu} F= \mu^{t} - k \cdot \nabla_{\mu} L(\tilde{\mu}, \tilde{s})
+\mu^{t+dt} = \mu^{t} - k \cdot \nabla_{\mu} F = \mu^{t} - k \cdot \nabla_{\mu} L(\mu, s) \, ,
 \end{equation}
-
-
-explicitate 
-
+with $k$ learning rate parameter that has to be tuned and $\nabla_{\mu} L(\mu, s)$ that goes to zero when a minimum of the $L$ function is reached.\\
+In the dynamic case instead,  
 
 
 
