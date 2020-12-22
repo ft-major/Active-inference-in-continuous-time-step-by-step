@@ -85,10 +85,7 @@
 \paragraph{\textbf{References:}} 
 \cite{Baltieri2019}, \cite{Buckley2017}, \cite{Bogacz2017},
 
-
-
-
-\section{Free Energy Principle (FEP)}
+\section{Introduction}
 The goal of an agent is to determine the probability of the hidden states given some sensory inputs:
 
 \begin{equation}
@@ -111,8 +108,19 @@ with
 
 For the agent it's not necessary to compute the complete posterior distribution, it has only to find the hidden state -or at least a good approximation- that maximize the posterior, i.e. $\arg \max_{\mathbf{x}} P(\mathbf x|\mathbf s)$.
 The problem with the exact Bayesian scheme, is that $P(\mathbf s)$ is often impossible to calculate, and moreover $P(\mathbf x|\mathbf s)$ may not take a standard shape and could not have a summary statistics. 
+\section{Predictive Coding}
+In signal theory when we have to represent a signal could be convenient, instead of represent it as it is, to code only the information that differ from a given prediction. This is obviously convenient only when is present some predictable redundancy, as it happens in natural images or speech signals.
+A known example is the retina, that heavily pre-processes the visual signal before transmitting it to the cortex.
+ 
+A large group of neuro-computational models are based on the bayesian predictive coding hypothesis, which consists in postulating that an agent, that has to infer the real state of the environment from the sensory input signals, implements this type of coding to tackle these task in combination with approximated bayesian computations. The main differences between these models can be almost always found in the way is postulated that the agent come up with a prediction, i.e. how the exact bayesian calculus is approximated.
 
-A biologically plausible technique consist in using an auxiliary distribution $Q(\mathbf x)$ called \emph{recognition density} (\emph{R-density}) that has to be optimized to became a good approximation of the posterior.  
+\subsection{Rao and Ballard Bayesian Predictive Coding}
+
+\newpage
+\section{Free Energy Principle (FEP)}
+
+
+Another biologically plausible technique to approximate the posterior $P(\mathbf x | \mathbf s)$ consist in using an auxiliary distribution $Q(\mathbf x)$ called \emph{recognition density} (\emph{R-density}) that has to be optimized to became a good approximation of the posterior.  
 
 In order to do this the Kullback-Leibler  divergence is minimized:
 \begin{equation}
@@ -127,7 +135,11 @@ D_{KL} (\, Q(\mathbf x)\, ||\, P(\mathbf x|\mathbf s)\, ) & = \int Q(\mathbf x) 
 where
 \begin{itemize}
 
-\item $F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x = - \left< \ln P(\mathbf x,\mathbf s) \right>_{Q} + \left< \ln Q(\mathbf x) \right>_{Q}$ is the \emph{Variational Free Energy} (VFE), a quantity that depends on the R-density and the knowledge about the environment i.e. the joint density $P(\mathbf s, \mathbf x) = P(\mathbf s|\mathbf x)P(\mathbf x)$ that we are assuming the agent has. 
+\item the term
+\begin{equation}
+F \equiv \int Q(\mathbf x) \ln \frac{Q(\mathbf x)}{P(\mathbf x,\mathbf s)}d\mathbf x = - \left< \ln P(\mathbf x,\mathbf s) \right>_{Q} + \left< \ln Q(\mathbf x) \right>_{Q}
+\end{equation} 
+is the \emph{Variational Free Energy} (VFE), a quantity that depends on the R-density and the knowledge about the environment i.e. the joint density $P(\mathbf s, \mathbf x) = P(\mathbf s|\mathbf x)P(\mathbf x)$ that we are assuming the agent has. 
 \item $\ln P(\mathbf s)$ is a term independent with respect to the recognition density $Q(\mathbf x)$ ( $\Rightarrow$ minimizing F with respect to $Q(\mathbf x)$ will minimize the $D_{KL}$ )
 
 \end{itemize}
@@ -210,7 +222,7 @@ Carrying on a theory based on an approximation that leads to Eq.(\ref{eqn:encode
 
 
 
-\subsection{Building the generative model}
+\subsection{Building the generative model and VFE minimisation}
 \label{sec:G}
 Thanks to the Laplace approximation, we've been able to write the VFE in terms of the Laplace-encoded energy $L(\mu,s)$, that in turn depends on the joint density $P(x, s)$. In this function are encoded the brain beliefs about the environmental causes of the sensory input and the beliefs \emph{a priori} about environmental states.
 
@@ -231,10 +243,10 @@ P(s|x) = \mathcal{N}(s;g(x),\Sigma_s) = \frac{1}{\sqrt{ 2 \pi \Sigma_{s}}} \, e^
 \end{equation}
 Moreover let us also assume that the agent also has a prior knowledge regarding the environmental state given by $\bar{\mu}$ that is linked with the inner state through
 \begin{equation}
-x = \bar{\mu} + \mathcal{N}(x;0,\Sigma_{x})
+x = \bar{x} + \mathcal{N}(x;0,\Sigma_{x})
 \end{equation}
 \begin{equation}
-\Rightarrow P(x) = \mathcal{N}(x;\bar{\mu},\Sigma_{x}) =\frac{1}{\sqrt{ 2 \pi \Sigma_{x}}} \, e^{\frac{(x-\bar{\mu})^2}{2 \Sigma_{x}}} \, .
+\Rightarrow P(x) = \mathcal{N}(x;\bar{x},\Sigma_{x}) =\frac{1}{\sqrt{ 2 \pi \Sigma_{x}}} \, e^{\frac{(x-\bar{x})^2}{2 \Sigma_{x}}} \, .
 \end{equation}
 
 Now that we have specified a likelihood and a prior, is possible to determine the joint density
@@ -245,31 +257,74 @@ and consequently the Laplace-encoded energy
 \begin{equation}
 \begin{split}
 L(\mu,s) & = - \ln P(s|\mu) - \ln P(\mu)  \\
-		 & = \frac{1}{2} \ln (2 \pi \Sigma_{s}) + \frac{(s-\mu)^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{\mu}) + \frac{(\mu-\bar{\mu})^2}{2 \Sigma_{\mu}} \\
-		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{\mu}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\mu} \right) + \ln (2 \pi) \, ,
+		 & = \frac{1}{2} \ln (2 \pi \Sigma_{s}) + \frac{(s-\mu)^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{x}) + \frac{(\mu-\bar{x})^2}{2 \Sigma_{x}} \\
+		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{x}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\mu} \right) + \ln (2 \pi) \, ,
 \end{split}
 \end{equation}
-where the $\varepsilon$ terms are said \emph{prediction errors} and measure the discrepancy respectively between the actual sensory data $s$ and the outcome of its prediction $g(\mu)$ and between $\mu$ itself and its prior expectation $\bar{\mu}$. Therefore the former $\varepsilon_{s}$ describes sensory prediction errors, the latter $\varepsilon_{\mu}$ model prediction errors (i.e. how brain states deviate from their expectation) and each one is weighted with the the corresponding inverse of the variance $\Sigma_{s}^{-1}$ and $\Sigma_{\mu}^{-1}$ (which are often said \emph{precisions}). \\
+where the $\varepsilon$ terms are said \emph{prediction errors} and measure the discrepancy respectively between the actual sensory data $s$ and the outcome of its prediction $g(x)|_{x=\mu}$ and between $\mu$ itself and its prior expectation $\bar{x}$. Therefore the former $\varepsilon_{s}$ describes sensory prediction errors, the latter $\varepsilon_{\mu}$ model prediction errors (i.e. how brain states deviate from their expectation) and each one is weighted with the the corresponding inverse of the variance $\Sigma_{s}^{-1}$ and $\Sigma_{x}^{-1}$ (which are often said \emph{precisions}). \\
 As said at the end of Sec.(\ref{sec:laplace}), since the $L$ function has a quadratic form is possible to ignore all the terms apart from the following
 \begin{equation}
-F \approx \frac{1}{2} \left[\frac{\varepsilon_{s}^2}{\Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{ \Sigma_{\mu}} + \ln \left( \Sigma_{s} \Sigma_{\mu} \right) \right] \, .
+F \approx \frac{1}{2} \left[\frac{\varepsilon_{s}^2}{\Sigma_{s}} + \frac{\varepsilon_{x}^2}{ \Sigma_{x}} + \ln \left( \Sigma_{s} \Sigma_{x} \right) \right] \, .
 \end{equation}
 
+The last thing that remains to do is to find a biologically plausible mechanism to minimise VFE.\\
+In the Free Energy Principle framework, it is proposed that the innate dynamics of the neural activity evolves in such a way that it implement a gradient descent scheme on the VFE. \\
+In particular, in the static model case, a brain state $\mu$ is updated between two (internal) sequential steps $t$ and $t+dt$ as
+\begin{equation}
+\mu^{t+dt} = \mu^{t} - k \cdot \nabla_{\mu} F = \mu^{t} - k \cdot \nabla_{\mu} L(\mu, s) \, ,
+\end{equation}
+with $k$ learning rate parameter that has to be tuned and $\nabla_{\mu} L(\mu, s)$ that goes to zero when a minimum of the $L$ function is reached.
 
 \subsubsection{Dynamic Model}
 Let's formulate a possible implementation of inference in a dynamically changing environment.
+
+It is clear that, in order to describe a dynamical system, the environmental variables describing the world must be at least two: $x$ and his first order derivative with respect to time $\frac{dx}{dt} \equiv \dot{x}$. 
+For this reason the agent, together with a prior knowledge regarding the environmental state $x$, must model the environmental dynamic.
+
+Since typically in a dynamic case the variable $x$ is allowed to vary without any boundary, a flat prior is usually associated to it (i.e. zero prior knowledge), while its dynamic is described using a Langevin-type equation as
+\begin{equation}
+\frac{d x(t)}{dt} = f(x) + z_{\dot{x}}(t) \, .
+\label{eqn:x}
+\end{equation}
 
 As the static case, is assumed that the agent believes its sensory input are generated in a similar manner with respect to Eq.(\ref{eqn:input}), in particular
 \begin{equation}
 s(x,t) = g(x) + z_s(t) \, .
 \label{eqn:s}
 \end{equation}
-Additionally, is assumed that the agent model of environmental dynamic follows the Langevin-type equation
+
+Both $z_s$ and $z_{\dot{x}}$ are again terms representing gaussian noise with zero mean and variances respectively equal to $\Sigma_s$ and $\Sigma_{\dot{x}}$.
+
+
 \begin{equation}
-\frac{d x(t)}{dt} = f(x) + z_x(t) \, .
-\label{eqn:x}
+P(x, \dot{x}, s) = P(s|x) P(\dot{x}|x) P(x) = C \cdot \mathcal{N}(s;x,\Sigma_s) \mathcal{N}(\dot{x};x,\Sigma_{\dot{x}})
 \end{equation}
-Both $z$ and $w$ are terms representing noise and that we will specify later.
+
+\begin{equation}
+\begin{split}
+L(\dot{\mu}, \mu, s) &=  \frac{(s-g(x))^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{s})+ \frac{(\dot{\mu}-f(\mu))^2}{2 \Sigma_{\dot{\mu}}} + \frac{1}{2} \ln (2 \pi \Sigma_{\dot{\mu}}) + C \\
+	&= \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\dot{\mu}}^2}{2 \Sigma_{\dot{\mu}}} + \frac{1}{2} \ln (\Sigma_{s}\Sigma_{\dot{\mu}}) + \ln(2 \pi) + C
+\end{split}
+\end{equation}
+
+
+\begin{equation}
+\mu^{t+dt} = \mu^{t} - k \cdot \nabla_{\mu} F = \mu^{t} - k \cdot \nabla_{\mu} L(\dot{\mu}, \mu, s) \, ,
+\end{equation}
+\begin{equation}
+\dot{\mu}^{t+dt} = \dot{\mu}^{t} - k \cdot \nabla_{\dot{\mu}} F = \dot{\mu}^{t} - k \cdot \nabla_{\dot{\mu}} L(\dot{\mu}, \mu, s) \, ,
+\end{equation}
+
+
+\begin{equation}
+\mu^{t+dt} = \mu^{t} + \dot{\mu} dt - k \cdot \nabla_{\mu} F = \mu^{t} + \dot{\mu} dt - k \cdot \nabla_{\mu} L(\dot{\mu}, \mu, s) \, ,
+\end{equation}
+\begin{equation}
+\dot{\mu}^{t+dt} = \dot{\mu}^{t} - k \cdot \nabla_{\dot{\mu}} F = \dot{\mu}^{t} - k \cdot \nabla_{\dot{\mu}} L(\dot{\mu}, \mu, s) \, ,
+\end{equation}
+
+
+\newpage
 
 Using a \emph{generalised state-space model}, in which the state of a dynamical system is represented in terms of increasingly higher order derivative of its state variables, in combination with local linearity approximation on higher orders of motion\footnote{Without this approximation the model would scale-up very quickly becoming complicated and unwieldy fairly quickly. This approximation becomes exact when $f$ and $g$ are linear.} suppressing non-linear terms in the partial derivatives, is possible to obtain 
 \begin{equation}
@@ -367,9 +422,9 @@ with $\varepsilon_{s_{[n]}} \equiv s_{[n]}-g_{[n]}$ and $\varepsilon_{\mu_{[n]}}
 
 Usually only dynamics up to a finite order $n_{max}$ are considered, and this is done by setting 
 \begin{equation}
-\mu_{[n_{max}+1]} = z_{\mu [n_{max}]}
+x_{[n_{max}+1]} = z_{x [n_{max}]}
 \end{equation}
-with $\Sigma_{\mu_{[n_{max}]}}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
+with $\Sigma_{x_{[n_{max}]}}$ large, so that the corresponding error term will be close to zero and can be ignored in the Laplace-encoded energy, meaning that the order below is unconstrained and free to change in a way that best fits the incoming sensory data.\\
 Finally, since also in this case the $L$ function has a quadratic form, when writing down the VFE is possible to ignore all the terms apart from
 \begin{equation}
 F \approx \frac{1}{2} \, \sum_{n=0}^{n_{max}} \left[ \frac{\varepsilon_{s_{[n]}}^2}{ \Sigma_{s_{[n]}}} + \frac{\varepsilon_{\mu_{[n]}}^2}{\Sigma_{\mu_{[n]}}} + \ln (\Sigma_{s_{[n]}}\Sigma_{\mu_{[n]}}) \right]
@@ -557,6 +612,170 @@ F &\approx \sum_{i=1}^S \left[ \frac{(\varepsilon_{\mathbf s}^{(i)})^2}{2 \Sigma
 \end{split}
 \end{equation}
 
+
+\newpage
+\begin{equation}
+\frac{d^2 x(t)}{dt^2} = - \omega^2 x(t)
+\end{equation}
+
+
+\begin{equation}
+A^2=x^2(0)+\frac{v^2(0)}{\omega^2} \quad , \quad \tan (\varphi) = - \frac{v(0)}{\omega x(0)}
+\end{equation}
+
+
+\begin{equation}
+x(t) = A \cos(\frac{t}{\phi} + \varphi)
+\end{equation}
+
+\begin{equation}
+\frac{ d x_{new} }{ dt } = -x_{new} + \alpha x
+\end{equation}
+
+\begin{equation}
+\mathbf x = \left[\begin{array}{c} x_0 \\ x_1 \\ x_2 \end{array}\right] 
+	\quad , \quad \mathbf{\dot{x}} = \left[\begin{array}{c}
+    \phi^2 x_1 \\
+    -x_0 \\
+    \alpha x_0 - x_2
+    \end{array}\right] 
+\end{equation}
+
+\begin{equation}
+\bm \mu = \left[\begin{array}{c} \mu_0 \\ \mu_1 \\ \mu_2 \end{array}\right] 
+	\quad , \quad \bm{\dot{\mu}} = \left[\begin{array}{c}
+    \phi^2 \mu_1 \\
+    -\mu_0 \\
+    \nu \mu_0 - \mu_2
+    \end{array}\right] + \mathcal{N}(\bm \mu | 0, \Sigma_x) 
+\end{equation}
+
+\begin{equation}
+\nu \, += -\frac{dF}{d\nu}
+\end{equation}
+
+\begin{equation}
+\bm{\dot{\mu}} = \left[\begin{array}{c}
+    \phi^2 \mu_1 \\
+    -\mu_0 \\
+    \nu \mu_0 - \mu_2
+    \end{array}\right] + \mathcal{N}(\bm \mu | 0, \Sigma_x)  \\
+\end{equation}
+\begin{equation}
+s_0 = \mu_2 + \mathcal{N}(s_0 | 0, \Sigma_{s_0}) 
+\end{equation}
+
+\begin{equation}
+s_1 = f(\mu_0, \mu_1) + \mathcal{N}(s_1 | 0, \Sigma_{s_1}) 
+\end{equation}
+
+
+\begin{equation}
+F \approx \frac{1}{2} \left[ \frac{(\dot{\mu_0}-\phi^2\mu_1)^2}{\Sigma_x} + \frac{(\dot{\mu_1}+\mu_0)^2}{\Sigma_x} + \frac{(\dot{\mu_2}+\mu_2-\alpha\mu_0)^2}{\Sigma_x} + \frac{(s_0-\mu_2)^2}{\Sigma_{s_0}} + \frac{(s_1-f(\mu_0, \mu_1))^2}{\Sigma_{s_1}}\right]
+\end{equation}
+
+\begin{equation}
+\frac{dF}{d \left[\begin{matrix}\mu_{0}\\\mu_{1}\\\mu_{2}\end{matrix}\right]} = \left[\begin{matrix}
+	\frac{\dot{\mu_1}+\mu_0}{\Sigma_x} - \alpha\frac{\dot{\mu_2}+\mu_2-\alpha\mu_0}{\Sigma_x} \\
+	-\phi^2\frac{\dot{\mu_0}-\phi^2\mu_1}{\Sigma_x}\\
+	\frac{\dot{\mu_2}+\mu_2-\alpha\mu_0}{\Sigma_x} - \frac{s-\mu_2}{\Sigma_s}\end{matrix}\right]
+\end{equation}
+
+\begin{equation}
+\frac{dF}{d \left[\begin{matrix}\dot{\mu_0}\\\dot{\mu_1}\\\dot{\mu_2}\end{matrix}\right]}  = \left[\begin{matrix}
+	\frac{\dot{\mu_0}-\phi^2\mu_1}{\Sigma_x} \\
+	\frac{\dot{\mu_1}+\mu_0}{\Sigma_x}\\
+	\frac{\dot{\mu_2}+\mu_2-\alpha\mu_0}{\Sigma_x}\end{matrix}\right]
+\end{equation}
+
+gradienti francesco
+\begin{equation}
+\begin{split}
+F \approx &\frac{\frac{\nu^{2} \mu_{x_0}^{2}}{2} - \nu \mu_{x_0} \mu_{x_2} - \nu \mu_{x_0} d\mu_{x_2} + \frac{\mu_{x_0}^{2}}{2} + \mu_{x_0} d\mu_{x_1} + \frac{\mu_{x_1}^{2} \left(\phi^{2}\right)^{2}}{2} - \mu_{x_1} \phi^{2} d\mu_{x_0} + \frac{\mu_{x_2}^{2}}{2} + \mu_{x_2} d\mu_{x_2}}{\sigma_{x}} + \\
+& \frac{\frac{d\mu_{x_0}^{2}}{2} + \frac{d\mu_{x_1}^{2}}{2} + \frac{d\mu_{x_2}^{2}}{2}}{\sigma_{x}} + \frac{\frac{\mu_{x_2}^{2}}{2} - \mu_{x_2} s + \frac{s^{2}}{2}}{\sigma_{s}^{2}}
+\end{split}
+\end{equation}
+
+\begin{equation}
+- \frac{d}{d \left[\begin{matrix}\mu_{x_0}\\\mu_{x_1}\\\mu_{x_2}\end{matrix}\right]} F = \left[\begin{matrix}- \frac{\nu^{2} \mu_{x_0} - \nu \mu_{x_2} - \nu d\mu_{x_2} + \mu_{x_0} + d\mu_{x_1}}{\sigma_{x}}\\- \frac{\mu_{x_1} \left(\phi^{2}\right)^{2} - \phi^{2} d\mu_{x_0}}{\sigma_{x}}\\- \frac{- \nu \mu_{x_0} + \mu_{x_2} + d\mu_{x_2}}{\sigma_{x}} - \frac{\mu_{x_2} - s}{\sigma_{s}^{2}}\end{matrix}\right]
+\end{equation}
+
+\begin{equation}
+- \frac{d}{d \left[\begin{matrix}d\mu_{x_0}\\d\mu_{x_1}\\d\mu_{x_2}\end{matrix}\right]} F = \left[\begin{matrix}- \frac{- \mu_{x_1} \phi^{2} + d\mu_{x_0}}{\sigma_{x}}\\- \frac{\mu_{x_0} + d\mu_{x_1}}{\sigma_{x}}\\- \frac{- \nu \mu_{x_0} + \mu_{x_2} + d\mu_{x_2}}{\sigma_{x}}\end{matrix}\right]
+\end{equation}
+
+
+\begin{equation}
+\dot{\mu} = f(\mu) + \mathcal{N}(\dot{\mu}|0,\Sigma_{\dot{\mu}})
+\end{equation}
+
+\begin{equation}
+\ddot{\mu} = \frac{\partial f}{\partial \mu} \dot{\mu} + \mathcal{N}(\ddot{\mu}|0,\Sigma_{\ddot{\mu}})
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\mu(t+dt) &= \mu(t) + dt \, (\dot{\mu}(t) + \eta \frac{dF}{d\mu} ) \\
+\dot{\mu}(t+dt) &= \dot{\mu}(t) + dt \, 	(\ddot{\mu}(t) + \eta \frac{dF}{d \dot{\mu}}) \\
+\ddot{\mu}(t+dt) &= \ddot{\mu}(t) + dt \, (\eta \frac{dF}{d \ddot{\mu}}) \\
+\end{split}
+\end{equation}
+
+\begin{equation}
+\bm \mu = \left[ \begin{matrix} \mu_0 \\ \mu_1 \end{matrix} \right]
+\end{equation}
+
+\begin{equation}
+\dot{\bm \mu} = \left[ \begin{matrix} \dot{\mu}_0 \\ \dot{\mu}_1 \end{matrix} \right] =  f\left( \left[ \begin{matrix} \mu_0 \\ \mu_1 \end{matrix} \right] \right) + \mathcal{N}(\dot{\bm \mu}|0,\Sigma_{\dot{\bm \mu}})
+\end{equation}
+
+\begin{equation}
+\bm \mu(t+dt) = \left[ \begin{matrix} \mu_0(t+dt) \\ \mu_1(t+dt) \end{matrix} \right] = 
+	\left[ \begin{matrix} \mu_0(t) + dt \, (\dot{\mu}_0 - \eta \frac{dF}{d\mu_0}) \\
+						  \mu_1(t) + dt \, (\dot{\mu}_1 - \eta \frac{dF}{d\mu_1})
+	\end{matrix} \right]
+\end{equation}
+
+
+\begin{equation}
+\dot{\bm \mu}(t+dt) = \left[ \begin{matrix} \dot{\mu}_0(t+dt) \\ \dot{\mu}_1(t+dt) \end{matrix} \right] = 
+	\left[ \begin{matrix} \dot{\mu}_0(t) + dt \, (- \eta \frac{dF}{d\mu_0}) \\
+						  \dot{\mu}_1(t) + dt \, (- \eta \frac{dF}{d\mu_1})
+	\end{matrix} \right]
+\end{equation}
+
+\begin{equation}
+\left[ \begin{matrix} \mu_0(t+dt) \\ \mu_1(t+dt) \end{matrix} \right] = 
+	\left[ \begin{matrix} \mu_0(t) + dt \, (\dot{\mu}_0 - \eta \frac{dF}{d\mu_0}) \\
+						  \mu_1(t) + dt \, (\dot{\mu}_1 - \eta \frac{dF}{d\mu_1})
+	\end{matrix} \right]
+\end{equation}
+
+\begin{equation}
+\dot{\bm \mu} = \left[ \begin{matrix} \dot{\mu}_0 \\ \dot{\mu}_1 \end{matrix} \right] = \left[ \begin{matrix} 0 & 1 \\ -\omega^2 & 0 \end{matrix} \right]  \left[ \begin{matrix} \mu_0 \\ \mu_1 \end{matrix} \right] + \mathcal{N}(\dot{\bm \mu}|0,\Sigma_{\dot{\bm \mu}})
+\end{equation}
+
+\begin{equation}
+\left[ \begin{matrix} \mu_0(t+dt) \\ \mu_1(t+dt)=\dot{\mu}_0(t+dt) \\ \mu_2(t+dt)=\dot{\mu}_1(t+dt) \end{matrix} \right] = 
+	\left[ \begin{matrix} \mu_0(t) + dt \, (\mu_1(t) - \eta \frac{dF}{d\mu_0}) \\
+						  \mu_1(t) + dt \, (\mu_2(t) - \eta \frac{dF}{d\mu_1}) \\
+						  \mu_2(t) + dt \, ( - \eta	\frac{dF}{d\mu_2})
+	\end{matrix} \right]
+\end{equation}
+
+\begin{equation}
+\frac{1}{2 \pi \phi} \simeq 0.226
+\end{equation}
+
+
+\begin{equation}
+T = 2 \pi \phi \simeq 4.442 \sim 5
+\end{equation}
+
+
+\begin{equation}
+s_t = f(x,v) + \mathcal{N}(s_t|0, \Sigma_{s_t}) = g(v) h(x) + \mathcal{N}(s_t|0, \Sigma_{s_t}) 
+\end{equation}
 
 
 
