@@ -110,11 +110,20 @@ For the agent it's not necessary to compute the complete posterior distribution,
 The problem with the exact Bayesian scheme, is that $P(\mathbf s)$ is often impossible to calculate, and moreover $P(\mathbf x|\mathbf s)$ may not take a standard shape and could not have a summary statistics. 
 \section{Predictive Coding}
 In signal theory when we have to represent a signal could be convenient, instead of represent it as it is, to code only the information that differ from a given prediction. This is obviously convenient only when is present some predictable redundancy, as it happens in natural images or speech signals.
-A known example is the retina, that heavily pre-processes the visual signal before transmitting it to the cortex.
+%A known example is the retina, that heavily pre-processes the visual signal before transmitting it to the cortex.
  
 A large group of neuro-computational models are based on the bayesian predictive coding hypothesis, which consists in postulating that an agent, that has to infer the real state of the environment from the sensory input signals, implements this type of coding to tackle these task in combination with approximated bayesian computations. The main differences between these models can be almost always found in the way is postulated that the agent come up with a prediction, i.e. how the exact bayesian calculus is approximated.
 
 \subsection{Rao and Ballard Bayesian Predictive Coding}
+The Rao and Ballard Predictive coding model of the visual cortex (\cite{Rao1999})
+
+
+
+
+
+
+
+
 
 \newpage
 \section{Free Energy Principle (FEP)}
@@ -258,7 +267,7 @@ and consequently the Laplace-encoded energy
 \begin{split}
 L(\mu,s) & = - \ln P(s|\mu) - \ln P(\mu)  \\
 		 & = \frac{1}{2} \ln (2 \pi \Sigma_{s}) + \frac{(s-\mu)^2}{2 \Sigma_{s}} + \frac{1}{2} \ln (2 \pi \Sigma_{x}) + \frac{(\mu-\bar{x})^2}{2 \Sigma_{x}} \\
-		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{x}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{\mu} \right) + \ln (2 \pi) \, ,
+		 & = \frac{\varepsilon_{s}^2}{2 \Sigma_{s}} + \frac{\varepsilon_{\mu}^2}{2 \Sigma_{x}} + \frac{1}{2} \ln \left( \Sigma_{s} \Sigma_{x} \right) + \ln (2 \pi) \, ,
 \end{split}
 \end{equation}
 where the $\varepsilon$ terms are said \emph{prediction errors} and measure the discrepancy respectively between the actual sensory data $s$ and the outcome of its prediction $g(x)|_{x=\mu}$ and between $\mu$ itself and its prior expectation $\bar{x}$. Therefore the former $\varepsilon_{s}$ describes sensory prediction errors, the latter $\varepsilon_{\mu}$ model prediction errors (i.e. how brain states deviate from their expectation) and each one is weighted with the the corresponding inverse of the variance $\Sigma_{s}^{-1}$ and $\Sigma_{x}^{-1}$ (which are often said \emph{precisions}). \\
@@ -347,7 +356,7 @@ where we have used the notation
 \begin{equation}
 s' = \frac{ds}{dt} \, , \qquad x'=\frac{dx}{dt} \, , \qquad s''= \frac{d^2 s}{dt^2} \, , \qquad x''= \frac{d^2 x}{dt^2} \, , \quad \dots
 \end{equation}
-and where $z_{s},z_{s}',z_{s}'',\dots, z_{x},z_{x}',z_{x}'',\dots$ are the noises source at each dynamic order.
+and where $z_{s},z_{s}',z_{s}'',\dots, z_{x},z_{x}',z_{x}'',\dots$ are the noise sources at each dynamic order.
 Considering the previous linear approximation as equalities, Eq.(\ref{eqn:hdm}) can be expressed in the more compact form
 \begin{equation}
 \tilde{s} = g(\tilde{x}) + \tilde{z_{s}} \quad , \quad \tilde{x}' = f(\tilde{x}) + \tilde{z_{x}}
